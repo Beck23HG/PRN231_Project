@@ -1,0 +1,241 @@
+﻿@{
+    ViewData["Title"] = "Register Page";
+}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'poppins', sans-serif;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-image: url('https://img.freepik.com/free-vector/geometric-gradient-futuristic-background_23-2149116406.jpg?t=st=1742844470~exp=1742848070~hmac=491ce1aaaa81e28c19c97a40ed2a22f03987d03d61e43d771a3aa99f178757e0&w=1380');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+    }
+
+    section {
+        position: relative;
+        max-width: 400px;
+        background-color: transparent;
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 20px;
+        backdrop-filter: blur(55px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 3rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: #fff;
+        text-align: center;
+    }
+
+    .inputbox {
+        position: relative;
+        margin: 30px 0;
+        max-width: 310px;
+        border-bottom: 2px solid #fff;
+    }
+
+        .inputbox label {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+            color: #fff;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: all 0.5s ease-in-out;
+        }
+
+    input:focus ~ label,
+    input:valid ~ label {
+        top: -5px;
+    }
+
+    .inputbox input {
+        width: 100%;
+        height: 60px;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        padding: 0 35px 0 5px;
+        color: #fff;
+    }
+
+    .inputbox ion-icon {
+        position: absolute;
+        right: 8px;
+        color: #fff;
+        font-size: 1.2rem;
+        top: 20px;
+    }
+
+    .class-selection {
+        margin: 20px 0;
+        max-width: 310px;
+    }
+
+        .class-selection label {
+            color: #fff;
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .class-selection .checkbox-group {
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 5px;
+        }
+
+            .class-selection .checkbox-group label {
+                display: flex;
+                align-items: center;
+                color: #fff;
+                font-size: 0.9rem;
+                margin-bottom: 5px;
+            }
+
+            .class-selection .checkbox-group input {
+                margin-right: 5px;
+            }
+
+    .forget {
+        margin: 35px 0;
+        font-size: 0.85rem;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .forget label {
+            display: flex;
+            align-items: center;
+        }
+
+            .forget label input {
+                margin-right: 3px;
+            }
+
+        .forget a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .forget a:hover {
+                text-decoration: underline;
+            }
+
+    button {
+        width: 100%;
+        height: 40px;
+        border-radius: 40px;
+        background-color: rgb(255,255,255,1);
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.4s ease;
+    }
+
+        button:hover {
+            background-color: rgb(255,255,255,0.5);
+        }
+
+    .register {
+        font-size: 0.9rem;
+        color: #fff;
+        text-align: center;
+        margin: 25px 0 10px;
+    }
+
+        .register p a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+        }
+
+            .register p a:hover {
+                text-decoration: underline;
+            }
+
+    .text-danger {
+        color: red;
+        font-size: 0.9rem;
+    }
+</style>
+
+<body>
+    <section>
+        <form asp-action="Register" asp-controller="Home" method="post">
+            <h1>Register</h1>
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="inputbox">
+                <ion-icon name="mail-outline"></ion-icon>
+                <input type="email" id="Username" name="Username" required />
+                <label for="Username">Email</label>
+            </div>
+
+            <div class="inputbox">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+                <input type="password" id="Password" name="Password" required />
+                <label for="Password">Password</label>
+            </div>
+
+            <div class="inputbox">
+                <ion-icon name="person-outline"></ion-icon>
+                <input type="text" id="Fullname" name="Fullname" required />
+                <label for="Fullname">Full Name</label>
+            </div>
+
+            <!-- Danh sách lớp học -->
+            <div class="class-selection">
+                <label>Select Classes (Lựa chọn lớp học)</label>
+                <div class="checkbox-group">
+                    @if (ViewBag.Classes != null)
+                    {
+                        foreach (var classItem in ViewBag.Classes)
+                        {
+                            <label>
+                                <input type="checkbox" name="SelectedClassIds" value="@classItem.ClassId" />
+                                @classItem.ClassName
+                            </label>
+                        }
+                    }
+                    else
+                    {
+                        <p>No classes available.</p>
+                    }
+                </div>
+            </div>
+
+            <button type="submit">Register</button>
+
+            <div class="register">
+                <p>Already have an account? <a asp-action="Login">Login</a></p>
+            </div>
+        </form>
+    </section>
+
+    <!-- Thêm script để sử dụng ion-icon -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>

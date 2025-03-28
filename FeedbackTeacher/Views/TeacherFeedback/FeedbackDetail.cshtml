@@ -1,0 +1,454 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Feedback List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background-color: #2c3e50;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            width: 16.66%;
+        }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+
+                .sidebar ul li {
+                    margin: 20px 0;
+                }
+
+                    .sidebar ul li a {
+                        color: #ecf0f1;
+                        text-decoration: none;
+                        font-size: 16px;
+                        padding: 10px 20px;
+                        display: flex;
+                        align-items: center;
+                        transition: background 0.3s;
+                    }
+
+                        .sidebar ul li a:hover {
+                            background-color: #34495e;
+                            border-radius: 5px;
+                        }
+
+                        .sidebar ul li a i {
+                            margin-right: 10px;
+                        }
+
+        .main-content {
+            margin-left: 16.66%;
+            padding: 40px;
+        }
+
+            .main-content header h1 {
+                font-size: 32px;
+                color: #2c3e50;
+                margin-bottom: 20px;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-family: Arial, sans-serif;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            color: #333;
+        }
+
+        .star-rating {
+            display: inline-flex;
+            align-items: center;
+        }
+
+            .star-rating i {
+                font-size: 20px;
+                margin-right: 2px;
+            }
+
+            .star-rating .fa-star {
+                color: #ffca08;
+            }
+
+            .star-rating .fa-star-half-alt {
+                color: #ffca08;
+            }
+
+            .star-rating .far.fa-star {
+                color: #ddd;
+            }
+
+        .tooltip-header {
+            position: relative;
+            cursor: pointer;
+        }
+
+            .tooltip-header .tooltip-text {
+                visibility: hidden;
+                width: 250px;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
+                padding: 8px;
+                position: absolute;
+                z-index: 1;
+                top: 125%;
+                left: 50%;
+                transform: translateX(-50%);
+                opacity: 0;
+                transition: opacity 0.3s;
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
+            .tooltip-header:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            .tooltip-header .tooltip-text::after {
+                content: '';
+                position: absolute;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -5px;
+                border-width: 5px;
+                border-style: solid;
+                border-color: transparent transparent #555 transparent;
+            }
+
+            .tooltip-header .tooltip-text {
+                transition: opacity 0.3s, transform 0.3s;
+                transform: translateX(-50%) translateY(10px);
+            }
+
+            .tooltip-header:hover .tooltip-text {
+                transform: translateX(-50%) translateY(0);
+            }
+
+        .average-ratings {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+            .average-ratings h3 {
+                font-size: 24px;
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+
+        .ratings-list {
+            margin-bottom: 20px;
+        }
+
+        .rating-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+            .rating-item span.label {
+                font-weight: bold;
+                color: #333;
+                width: 200px;
+            }
+
+            .rating-item .star-rating {
+                margin-left: 10px;
+            }
+
+        .overall-rating {
+            background-color: #e8f4f8;
+            border: 2px solid #2c3e50;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .overall-rating h4 {
+                font-size: 28px;
+                color: #2c3e50;
+                margin-bottom: 10px;
+            }
+
+        .overall-rating-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .overall-rating .star-rating {
+            display: flex;
+            align-items: center;
+        }
+
+            .overall-rating .star-rating i {
+                font-size: 30px;
+                margin-right: 5px;
+            }
+
+        .overall-rating .overall-score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .overall-rating .rating-text {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .rating-text.kém {
+            color: red;
+        }
+
+        .rating-text.trungbình {
+            color: orange;
+        }
+
+        .rating-text.tốt {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="row m-0">
+        <nav class="col-md-2 sidebar">
+            <ul>
+                <li><a href="@Url.Action("Home", "Home")"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="@Url.Action("ListFeedback", "TeacherFeedback")"><i class="fas fa-comment"></i> Feedback</a></li>
+                <li><a href="@Url.Action("Logout", "Home")"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="col-md-10 main-content">
+            <header>
+                <h1>Feedback Teacher</h1>
+            </header>
+
+            <div class="average-ratings">
+                <h3>Average Ratings</h3>
+                <div class="ratings-list">
+                    <div class="rating-item">
+                        <span class="label">Teaching Skills:</span>
+                        <div class="star-rating">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < Math.Floor((double)ViewBag.AvgTitle1))
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else if (i < (double)ViewBag.AvgTitle1)
+                                {
+                                    <i class="fas fa-star-half-alt"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                            <span>(@ViewBag.AvgTitle1.ToString("0.0") / 5)</span>
+                        </div>
+                    </div>
+                    <div class="rating-item">
+                        <span class="label">Support:</span>
+                        <div class="star-rating">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < Math.Floor((double)ViewBag.AvgTitle2))
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else if (i < (double)ViewBag.AvgTitle2)
+                                {
+                                    <i class="fas fa-star-half-alt"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                            <span>(@ViewBag.AvgTitle2.ToString("0.0") / 5)</span>
+                        </div>
+                    </div>
+                    <div class="rating-item">
+                        <span class="label">Quality & Effectiveness:</span>
+                        <div class="star-rating">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < Math.Floor((double)ViewBag.AvgTitle3))
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else if (i < (double)ViewBag.AvgTitle3)
+                                {
+                                    <i class="fas fa-star-half-alt"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                            <span>(@ViewBag.AvgTitle3.ToString("0.0") / 5)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overall-rating">
+                    <h4>Overall Rating</h4>
+                    <div class="overall-rating-content">
+                        <div class="star-rating">
+                            @for (int i = 0; i < 5; i++)
+                            {
+                                if (i < Math.Floor((double)ViewBag.OverallAverage))
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                else if (i < (double)ViewBag.OverallAverage)
+                                {
+                                    <i class="fas fa-star-half-alt"></i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-star"></i>
+                                }
+                            }
+                            <span class="overall-score">(@ViewBag.OverallAverage.ToString("0.0") / 5)</span>
+                        </div>
+                        <span class="rating-text @ViewBag.OverallRating.ToLower()">@ViewBag.OverallRating</span>
+                    </div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Student</th>
+                        <th class="tooltip-header">
+                            Teaching Skills
+                            <span class="tooltip-text">Teaching skills of teacher</span>
+                        </th>
+                        <th class="tooltip-header">
+                            Support
+                            <span class="tooltip-text">Support from the teacher - guidance for practical exercises, answering questions out side of class</span>
+                        </th>
+                        <th class="tooltip-header">
+                            Quality & Effectiveness
+                            <span class="tooltip-text">To what extent are you pleased with the quality and effectiveness of the lecturer's teaching and mentoring in your learning progress?</span>
+                        </th>
+                        <th>Content</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.Feedbacks != null && ViewBag.Feedbacks.Count > 0)
+                    {
+                        foreach (var feedback in ViewBag.Feedbacks)
+                        {
+                            <tr>
+                                <td>@feedback.Class.ClassName</td>
+                                <td>??</td>
+                                <td>
+                                    <div class="star-rating">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < feedback.Title1)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="star-rating">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < feedback.Title2)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="star-rating">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            if (i < feedback.Title3)
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-star"></i>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                                <td>@feedback.Content</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" style="text-align: center;">No feedback available.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

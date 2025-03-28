@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Give Feedback</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background-color: #2c3e50;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            width: 16.66%;
+        }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+
+                .sidebar ul li {
+                    margin: 20px 0;
+                }
+
+                    .sidebar ul li a {
+                        color: #ecf0f1;
+                        text-decoration: none;
+                        font-size: 16px;
+                        padding: 10px 20px;
+                        display: flex;
+                        align-items: center;
+                        transition: background 0.3s;
+                    }
+
+                        .sidebar ul li a:hover {
+                            background-color: #34495e;
+                            border-radius: 5px;
+                        }
+
+                        .sidebar ul li a i {
+                            margin-right: 10px;
+                        }
+
+        .main-content {
+            margin-left: 16.66%;
+            padding: 40px;
+        }
+
+            .main-content header h1 {
+                font-size: 32px;
+                color: #2c3e50;
+                margin-bottom: 20px;
+            }
+
+        .main-image {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .feedback-header h2 {
+                margin: 0;
+                color: #333;
+            }
+
+        .feedback-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .feedback-section {
+            margin-bottom: 20px;
+        }
+
+            .feedback-section label {
+                font-weight: bold;
+                display: block;
+                margin-bottom: 5px;
+                color: #333;
+            }
+
+        .rating {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+            .rating input {
+                display: none;
+            }
+
+            .rating label {
+                font-size: 30px;
+                color: #ddd;
+                cursor: pointer;
+            }
+
+            .rating .star-filled {
+                color: #ffca08;
+            }
+
+        .feedback-textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            .submit-btn:hover {
+                background-color: #45a049;
+            }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .is-invalid {
+            border-color: red;
+        }
+
+        .text-danger {
+            color: red;
+            font-size: 0.875em;
+        }
+    </style>
+</head>
+<body>
+    @if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '@TempData["ErrorMessage"]',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    }
+    <div class="row m-0">
+        <nav class="col-md-2 sidebar">
+            <ul>
+                <li><a href="@Url.Action("Home", "Home")"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="@Url.Action("ListFeedback", "StudentFeedback")"><i class="fas fa-comment"></i> Feedback</a></li>
+                <li><a href="@Url.Action("Logout", "Home")"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+        <div class="col-md-10 main-content">
+            <div class="feedback-container">
+                <div class="feedback-header">
+                    <h2>Give Feedback</h2>
+                </div>
+                <div class="feedback-info">
+                    Class (Lớp): @ViewBag.Class<br>
+                    Subject/Môn học: @ViewBag.Subject<br>
+                    Teacher (Giảng viên): @ViewBag.Teacher
+                </div>
+
+                <form asp-action="SubmitFeedback" method="post" id="feedbackForm">
+                    @foreach (var item in ((IEnumerable<string>)ViewBag.Titles).Select((title, index) => new { Title = title, Index = index }))
+                    {
+                        <div class="feedback-section">
+                            <label>@item.Title</label>
+                            <div class="rating" data-rating="@item.Title.Replace(" ", "_")">
+                                <input type="radio" id="@item.Title.Replace(" ", "_")_1" name="Rating_@item.Index" value="1">
+                                <label for="@item.Title.Replace(" ", "_")_1">★</label>
+                                <input type="radio" id="@item.Title.Replace(" ", "_")_2" name="Rating_@item.Index" value="2">
+                                <label for="@item.Title.Replace(" ", "_")_2">★</label>
+                                <input type="radio" id="@item.Title.Replace(" ", "_")_3" name="Rating_@item.Index" value="3">
+                                <label for="@item.Title.Replace(" ", "_")_3">★</label>
+                                <input type="radio" id="@item.Title.Replace(" ", "_")_4" name="Rating_@item.Index" value="4">
+                                <label for="@item.Title.Replace(" ", "_")_4">★</label>
+                                <input type="radio" id="@item.Title.Replace(" ", "_")_5" name="Rating_@item.Index" value="5">
+                                <label for="@item.Title.Replace(" ", "_")_5">★</label>
+                            </div>
+                            <span class="text-danger" style="display:none;" id="error_@item.Index">Please select a rating for this question.</span>
+                        </div>
+                    }
+
+                    <div class="feedback-section">
+                        <label>Comments (Bình luận)</label>
+                        <textarea class="feedback-textarea" id="Comment" name="Comments" placeholder="Enter your comments here..."></textarea>
+                        <span class="text-danger" style="display:none;" id="error_Comment">Please enter a comment.</span>
+                    </div>
+
+                    <input type="hidden" name="ClassId" value="@ViewBag.ClassId" />
+                    <input type="hidden" name="UserId" value="@ViewBag.UserId" />
+
+                    <div class="feedback-section" style="text-align: center;">
+                        <button type="submit" class="submit-btn">Send Feedback</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script xử lý hiệu ứng ngôi sao
+        document.querySelectorAll('.rating').forEach(rating => {
+            const labels = rating.querySelectorAll('label');
+            const inputs = rating.querySelectorAll('input');
+
+            labels.forEach((label, index) => {
+                label.addEventListener('mouseover', () => {
+                    labels.forEach((l, i) => {
+                        if (i <= index) l.classList.add('star-filled');
+                        else l.classList.remove('star-filled');
+                    });
+                });
+
+                label.addEventListener('mouseout', () => {
+                    labels.forEach(l => l.classList.remove('star-filled'));
+                    const checkedInput = rating.querySelector('input:checked');
+                    if (checkedInput) {
+                        const checkedIndex = Array.from(inputs).indexOf(checkedInput);
+                        labels.forEach((l, i) => {
+                            if (i <= checkedIndex) l.classList.add('star-filled');
+                            else l.classList.remove('star-filled');
+                        });
+                    }
+                });
+
+                label.addEventListener('click', () => {
+                    labels.forEach(l => l.classList.remove('star-filled'));
+                    const clickedIndex = Array.from(labels).indexOf(label);
+                    labels.forEach((l, i) => {
+                        if (i <= clickedIndex) l.classList.add('star-filled');
+                    });
+                    inputs[clickedIndex].checked = true;
+                });
+            });
+        });
+
+        // Script kiểm tra form khi gửi
+        const feedbackForm = document.getElementById('feedbackForm');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('submit', function (event) {
+                let isValid = true;
+                let errorMessage = '';
+
+                // Kiểm tra rating
+                document.querySelectorAll('.rating').forEach((rating, index) => {
+                    const checkedInput = rating.querySelector('input:checked');
+                    const errorSpan = document.getElementById('error_' + index);
+                    if (!checkedInput) {
+                        isValid = false;
+                        errorMessage += 'Please select a rating for all questions.\n';
+                        errorSpan.style.display = 'block';
+                    } else {
+                        errorSpan.style.display = 'none';
+                    }
+                });
+
+                // Kiểm tra comment
+                const comment = document.getElementById('Comment').value.trim();
+                const commentErrorSpan = document.getElementById('error_Comment');
+                if (!comment) {
+                    isValid = false;
+                    errorMessage += 'Please enter a comment.\n';
+                    commentErrorSpan.style.display = 'block';
+                } else {
+                    commentErrorSpan.style.display = 'none';
+                }
+
+                // Nếu không hợp lệ, hiển thị alert và ngăn gửi form
+                if (!isValid) {
+                    event.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validation Error',
+                        text: errorMessage,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        } else {
+            console.error("Form with id 'feedbackForm' not found.");
+        }
+    </script>
+</body>
+</html>
